@@ -1,0 +1,17 @@
+#!/usr/bin/python3
+
+import requests
+import json
+
+url = "https://employee-e829.restdb.io/rest/100-records"
+
+payload = json.dumps( {'Emp Id' : '99', 'First Name' : 'Nitish', 'Last Name' : 'Singh', 'Gender' : 'M'} )
+headers = {
+    'content-type': "application/json",
+    'x-apikey': "a68c55f68a81dd3de249d58bff90f15aa633c",
+    'cache-control': "no-cache"
+    }
+
+response = requests.request("POST", url, data=payload, headers=headers)
+
+print(response.text)
