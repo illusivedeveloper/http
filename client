@@ -30,13 +30,13 @@ def list():
 
 def add():
     urla = "https://employee-e829.restdb.io/rest/100-records"
-    headers = {'content-type', 'application/json', 'x-apikey', 'a68c55f68a81dd3de249d58bff90f15aa633c', 'cache-control', 'no-cache'}
+    headers = {'content-type' : 'application/json', 'x-apikey' : 'a68c55f68a81dd3de249d58bff90f15aa633c', 'cache-control' : 'no-cache'}
     values = {'Emp Id' : '99', 'First Name' : 'Nitish', 'Last Name' : 'Singh', 'Gender' : 'M'}
     data = urllib.parse.urlencode(values)
     data = data.encode('ascii')
     content = urllib.request.Request(urla, data)
-    with urllib.request.urlopen(content, headers) as response:
-        the_page = response.read()
+    with urllib.request.urlopen(content, data=bytes(json.dumps(headers), encoding="utf-8")) as response:
+        the_page = json.loads(response.read().decode())
     print(the_page)
     
 
