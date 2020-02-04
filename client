@@ -34,11 +34,16 @@ def add():
     values = {'Emp Id' : '99', 'First Name' : 'Nitish', 'Last Name' : 'Singh', 'Gender' : 'M'}
     data = urllib.parse.urlencode(values)
     data = data.encode('ascii')
+    req = urllib.request.Request(urla, data, headers)
+    with urllib.request.urlopen(req) as response:
+        the_page = response.read()
+    '''
     content = urllib.request.Request(urla, data)
     with urllib.request.urlopen(content, data=bytes(json.dumps(headers), encoding="utf-8")) as response:
         the_page = json.loads(response.read().decode())
     print(the_page)
-    
+    '''
+
 
 if __name__ == '__main__':
     #list()
