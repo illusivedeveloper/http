@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+import json
+import urllib.request
+import urllib.parse
+import http.client
+
+'''
+# HTTP GET method status code and reason
+host = input("Enter host: ")
+port = input("Enter port: ")
+conn = http.client.HTTPConnection(host, port)
+conn.request("GET", "/")
+response = conn.getresponse()
+print(response.status, response.reason)
+
+url = host + ':' + port
+print(url)
+'''
+
+'''
+def list():
+    urll = urllib.request.Request("https://employee-e829.restdb.io/rest/100-records")
+    urll.add_header('content-type', 'application/json')
+    urll.add_header('x-apikey', 'a68c55f68a81dd3de249d58bff90f15aa633c')
+    urll.add_header('cache-control', 'no-cache')
+    content = urllib.request.urlopen(urll).read()
+    print(content)
+'''
+
+def add():
+    urla = "https://employee-e829.restdb.io/rest/100-records"
+    headers = {'content-type', 'application/json', 'x-apikey', 'a68c55f68a81dd3de249d58bff90f15aa633c', 'cache-control', 'no-cache'}
+    values = {'Emp Id' : '99', 'First Name' : 'Nitish', 'Last Name' : 'Singh', 'Gender' : 'M'}
+    data = urllib.parse.urlencode(values)
+    data = data.encode('ascii')
+    content = urllib.request.Request(urla, data)
+    with urllib.request.urlopen(content, headers) as response:
+        the_page = response.read()
+    print(the_page)
+    
+
+if __name__ == '__main__':
+    #list()
+    add()
+    
