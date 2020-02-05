@@ -46,11 +46,10 @@ def efsctl_init():
     print("Setting connection")
     global conn 
     conn = http.client.HTTPConnection(host, port)
-
-    ''' 
     conn.request("GET", "/")
     response = conn.getresponse()
     print("Status Code: {} Reason: {}".format(response.status, response.reason))
+    '''
     data = response.read()
     print(data.decode())
     '''
