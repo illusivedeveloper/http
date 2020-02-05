@@ -10,18 +10,10 @@ import argparse
 default_host = "127.0.0.1"
 default_port = "8000"
 
-'''
-def efsctl_query(*argv):
-    method = argv[1]
-    url = argv[2]
-    body = argv[3]
-    headers = argv[4]
-    connq = http.client.HTTPConnection.request()    
-
-'''
 def efsctl_query(method, url, headers, content):
     conn.request(method, url, content, headers)
-    
+
+
 def efsctl_echo(data):
     method = "PUT"
     url = "/echo"
@@ -39,6 +31,7 @@ def efsctl_create(data):
     efsctl_query(method, url, headers, content)
 
     conn.getresponse()
+
 
 def efsctl_init():
     port = args.port
@@ -62,17 +55,38 @@ def efsctl_init():
     print(data.decode())
     '''
 
+
+def cmd_fun():
+    fun = args.rfunc
+    arg_data = args.rdata
+    cmd = {"echo" : efsctl_echo,
+            "create" : efsctl_create
+            }
+    run_func = cmd.get(fun)
+    run_func(arg_data)
+
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--host')
     parser.add_argument('--port')
     parser.add_argument('--data')
-    
+
+    parser.add_argument('rfunc')
+    parser.add_argument('rdata')
+
+
     args = parser.parse_args()
     
     efsctl_init()
+    cmd_fun()
+
+
+
+'''
     cmd = args.
     switch(cmd):
     "echo"
         efsctl_echo(args.data)
     "create"
+'''
