@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 import argparse
-import urllib.request
-import urllib.parse
+#import urllib.request
+#import urllib.parse
 import http.client
-import json
-import requests
+#import json
+#import requests
 
 def con_check():
     print("Verifying HTTP connection...")
@@ -14,26 +14,13 @@ def con_check():
     response = conn.getresponse()
     print("Status Code: {} Reason: {}".format(response.status, response.reason))
 
-def list_all():
-    
-    #url = "https://employee-e829.restdb.io/rest/100-records"
-    headers = {
-        'content-type': "application/json",
-        'x-apikey': "a68c55f68a81dd3de249d58bff90f15aa633c",
-        'cache-control': "no-cache"
-        }
-    response = requests.request(args.method, args.host, headers=headers)
-    print(response.text)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--host')
     parser.add_argument('--port')
-    parser.add_argument('--method')
     args = parser.parse_args()
     con_check()
-    
-    list_all()
+    #list_all()
     #add()
     #delete()
     #update()
