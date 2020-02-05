@@ -14,24 +14,42 @@ def efsctl_query(method, url, headers, content):
     conn.request(method, url, content, headers)
 
 
-def efsctl_echo(data):
+def efsctl_fs_echo():
+    parser.add_argument('--data')
+    args = parser.parse_args()
     method = "PUT"
     url = "/echo"
     headers = {}
-    content = data
+    content = args.data
     efsctl_query(method, url, headers, content)
 
     conn.getresponse()
 
-def efsctl_create(data):
+def efsctl_fs_create():
     method = "PUT"
     url = "/create"
     headers = {}
-    content = data
+    fs_name = ""
+    fs_options = "" 
+    content = ""
     efsctl_query(method, url, headers, content)
 
     conn.getresponse()
 
+def efsctl_fs(command):
+    command_switcher = \
+            {"echo" : efsctl_fs_echo,
+             "export" : efsctl_fs_create
+            }
+    fs_command = command_switcher.get(command)
+    fs_command()
+
+def efsctl_export(command):
+    command_switcher = \
+            {"echo" : efsctl_export_echo
+            }
+    export_command = command_switcher.get(command)
+    export_command()
 
 def efsctl_init():
     port = args.port
@@ -46,36 +64,36 @@ def efsctl_init():
     print("Setting connection")
     global conn 
     conn = http.client.HTTPConnection(host, port)
+    '''
     conn.request("GET", "/")
     response = conn.getresponse()
     print("Status Code: {} Reason: {}".format(response.status, response.reason))
-    '''
     data = response.read()
     print(data.decode())
     '''
 
 
-def cmd_fun():
-    fun = args.rfunc
-    arg_data = args.rdata
-    cmd = {"echo" : efsctl_echo,
-            "create" : efsctl_create
+def efsctl_execute():
+    controller = args.controller
+    command = args.command
+    controller_switcher = \
+            {"fs" : efsctl_fs,
+             "export" : efsctl_export
             }
-    run_func = cmd.get(fun)
-    run_func(arg_data)
+    controller = controller_switcher.get(controller)
+    controller(command)
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--host')
     parser.add_argument('--port')
-    parser.add_argument('--data')
 
-    parser.add_argument('rfunc')
-    parser.add_argument('rdata')
+    parser.add_argument('controller')
+    parser.add_argument('command')
 
 
     args = parser.parse_args()
     
     efsctl_init()
-    cmd_fun()
+    efsctl_execute()
