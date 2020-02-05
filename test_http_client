@@ -1,0 +1,78 @@
+#!/usr/bin/python3
+
+import sys
+import json
+import http.client
+import urllib.request
+import urllib.parse
+import argparse
+
+default_host = "127.0.0.1"
+default_port = "8000"
+
+'''
+def efsctl_query(*argv):
+    method = argv[1]
+    url = argv[2]
+    body = argv[3]
+    headers = argv[4]
+    connq = http.client.HTTPConnection.request()    
+
+'''
+def efsctl_query(method, url, headers, content):
+    conn.request(method, url, content, headers)
+    
+def efsctl_echo(data):
+    method = "PUT"
+    url = "/echo"
+    headers = {}
+    content = data
+    efsctl_query(method, url, headers, content)
+
+    conn.getresponse()
+
+def efsctl_create(data):
+    method = "PUT"
+    url = "/create"
+    headers = {}
+    content = data
+    efsctl_query(method, url, headers, content)
+
+    conn.getresponse()
+
+def efsctl_init():
+    port = args.port
+    host = args.host
+
+    if port is None:
+        port = default_port
+
+    if host is None:
+        host = default_host
+
+    print("Setting connection")
+    global conn 
+    conn = http.client.HTTPConnection(host, port)
+
+    ''' 
+    conn.request("GET", "/")
+    response = conn.getresponse()
+    print("Status Code: {} Reason: {}".format(response.status, response.reason))
+    data = response.read()
+    print(data.decode())
+    '''
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host')
+    parser.add_argument('--port')
+    parser.add_argument('--data')
+    
+    args = parser.parse_args()
+    
+    efsctl_init()
+    cmd = args.
+    switch(cmd):
+    "echo"
+        efsctl_echo(args.data)
+    "create"
