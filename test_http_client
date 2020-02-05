@@ -80,13 +80,3 @@ if __name__ == "__main__":
     
     efsctl_init()
     cmd_fun()
-
-
-
-'''
-    cmd = args.
-    switch(cmd):
-    "echo"
-        efsctl_echo(args.data)
-    "create"
-'''
