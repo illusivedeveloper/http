@@ -69,8 +69,8 @@ def efsctl_execute():
     except:
         print("Error: Invalid Controller or Command")
         print('''Valid Controllers with respective commands are:
-                Controller: fs  Commands: echo, create
-                Controller: export  Commands: echo''')
+                Controller: fs | Commands: [echo (fsname, fs-options), create]
+                Controller: export | Commands: [echo]''')
 
 def efsctl_init():
     port = args.port
