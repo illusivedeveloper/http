@@ -38,7 +38,7 @@ def efsctl_fs_echo():
             content = ""
     except:
         content = ""
-                    
+
     efsctl_query(method, url, headers, content)
     conn.getresponse()
     print("fs controller echo command operation completed")
@@ -82,16 +82,14 @@ def efsctl_execute():
              "export" : efsctl_export
             }
     controller = controller_switcher.get(controller)
-    controller(command)    
-    '''
+    #controller(command)    
     try:
         controller(command)
     except:
         print("Error: Invalid Controller or Command")
-        print(''' '''Valid Controllers with respective commands are:
+        print('''Valid Controllers with respective commands are:
                 Controller: fs | Commands: [echo (fsname, fs-options), create]
-                Controller: export | Commands: [echo]''' ''')
-    '''
+                Controller: export | Commands: [echo]''')
 
 def efsctl_init():
     port = args.port
