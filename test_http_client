@@ -15,14 +15,13 @@ def efsctl_query(method, url, headers, content):
 
 
 def efsctl_fs_echo():
-    parser.add_argument('--data')
-    args = parser.parse_args()
     method = "PUT"
     url = "/echo"
     headers = {}
-    content = args.data
+    name = args.name
+    options = args.options
+    content = b'{"fs-name" : name, "fs-options" : options}'
     efsctl_query(method, url, headers, content)
-
     conn.getresponse()
 
 def efsctl_fs_create():
@@ -33,13 +32,12 @@ def efsctl_fs_create():
     fs_options = "" 
     content = ""
     efsctl_query(method, url, headers, content)
-
     conn.getresponse()
 
 def efsctl_fs(command):
     command_switcher = \
             {"echo" : efsctl_fs_echo,
-             "export" : efsctl_fs_create
+             "create" : efsctl_fs_create
             }
     fs_command = command_switcher.get(command)
     fs_command()
@@ -50,6 +48,17 @@ def efsctl_export(command):
             }
     export_command = command_switcher.get(command)
     export_command()
+
+def efsctl_execute():
+    controller = args.controller
+    command = args.command
+    controller_switcher = \
+            {"fs" : efsctl_fs,
+             "export" : efsctl_export
+            }
+    controller = controller_switcher.get(controller)
+    controller(command)
+
 
 def efsctl_init():
     port = args.port
@@ -72,26 +81,16 @@ def efsctl_init():
     print(data.decode())
     '''
 
-
-def efsctl_execute():
-    controller = args.controller
-    command = args.command
-    controller_switcher = \
-            {"fs" : efsctl_fs,
-             "export" : efsctl_export
-            }
-    controller = controller_switcher.get(controller)
-    controller(command)
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--host')
     parser.add_argument('--port')
+    parser.add_argument('--name')
+    parser.add_argument('--options')
 
     parser.add_argument('controller')
     parser.add_argument('command')
-
 
     args = parser.parse_args()
     
