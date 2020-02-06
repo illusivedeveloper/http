@@ -41,6 +41,12 @@ def efsctl_fs(command):
             }
     fs_command = command_switcher.get(command)
     fs_command()
+    '''
+    try:
+        fs_command()
+    except:
+        print("Invalid Command")
+    '''
 
 def efsctl_export(command):
     command_switcher = \
@@ -57,8 +63,14 @@ def efsctl_execute():
              "export" : efsctl_export
             }
     controller = controller_switcher.get(controller)
-    controller(command)
-
+    #controller(command)    
+    try:
+        controller(command)
+    except:
+        print("Error: Invalid Controller or Command")
+        print('''Valid Controllers with respective commands are:
+                Controller: fs  Commands: echo, create
+                Controller: export  Commands: echo''')
 
 def efsctl_init():
     port = args.port
@@ -70,7 +82,7 @@ def efsctl_init():
     if host is None:
         host = default_host
 
-    print("Setting connection")
+    print("Setting connection...")
     global conn 
     conn = http.client.HTTPConnection(host, port)
     '''
