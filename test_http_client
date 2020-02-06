@@ -83,11 +83,11 @@ def efsctl_init():
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--host')
-    parser.add_argument('--port')
-    parser.add_argument('--name')
-    parser.add_argument('--options')
+    parser = argparse.ArgumentParser(description='Utility to control fs functions using REST API and HTTP protocol.')
+    parser.add_argument('--host', help='Host system to connect')
+    parser.add_argument('--port', '-p', help='Process port on the host system to connect')
+    parser.add_argument('--name', '-n', help='fs-name to pass on to controller\'s command')
+    parser.add_argument('--options', '-o', help='fs-options to pass on to controller\'s command')
 
     parser.add_argument('controller')
     parser.add_argument('command')
