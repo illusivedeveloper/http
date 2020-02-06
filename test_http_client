@@ -20,9 +20,13 @@ def efsctl_fs_echo():
     headers = {}
     options = args.options
     json_content = {}
+    json_content_set = set()
     for i in range (len(options)):
-        split = (options[i].split(':'))
-        json_content.update({split[0] : split[1]})
+        if ':' not in options[i]:
+            json_content_set.add(options[i])
+        else:    
+            split = (options[i].split(':'))
+            json_content.update({split[0] : split[1]})
     content = json.dumps(json_content).encode('utf-8')
     efsctl_query(method, url, headers, content)
     conn.getresponse()
