@@ -18,16 +18,27 @@ def efsctl_fs_echo():
     method = "PUT"
     url = "/echo"
     headers = {}
+    
     options = args.options
+    options_list = []
     json_content = {}
-    json_content_set = set()
-    for i in range (len(options)):
-        if ':' not in options[i]:
-            json_content_set.add(options[i])
-        else:    
-            split = (options[i].split(':'))
-            json_content.update({split[0] : split[1]})
-    content = json.dumps(json_content).encode('utf-8')
+    try:
+        if len(options) == 0:
+            for i in range (len(options)):
+                if ':' not in options[i]:
+                    options_list.append(options[i].encode('utf-8'))
+                else:    
+                    split = (options[i].split(':'))
+                    json_content.update({split[0] : split[1]})
+            if len(options_list) == 0:
+                content = json.dumps(json_content).encode('utf-8')
+            else:
+                content = options_list
+        else:
+            content = ""
+    except:
+        content = ""
+                    
     efsctl_query(method, url, headers, content)
     conn.getresponse()
     print("fs controller echo command operation completed")
@@ -71,14 +82,16 @@ def efsctl_execute():
              "export" : efsctl_export
             }
     controller = controller_switcher.get(controller)
-    #controller(command)    
+    controller(command)    
+    '''
     try:
         controller(command)
     except:
         print("Error: Invalid Controller or Command")
-        print('''Valid Controllers with respective commands are:
+        print(''' '''Valid Controllers with respective commands are:
                 Controller: fs | Commands: [echo (fsname, fs-options), create]
-                Controller: export | Commands: [echo]''')
+                Controller: export | Commands: [echo]''' ''')
+    '''
 
 def efsctl_init():
     port = args.port
