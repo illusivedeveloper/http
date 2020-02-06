@@ -18,8 +18,9 @@ def efsctl_fs_echo():
     method = "PUT"
     url = "/echo"
     headers = {}
-    name = args.name
-    options = args.options
+    name = args2.name
+    options = args2.options
+    
     content = b'{"fs-name" : name, "fs-options" : options}'
     efsctl_query(method, url, headers, content)
     conn.getresponse()
@@ -96,15 +97,20 @@ def efsctl_init():
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Utility to control fs functions using REST API and HTTP protocol.')
-    parser.add_argument('--host', help='Host system to connect')
-    parser.add_argument('--port', '-p', help='Process port on the host system to connect')
-    parser.add_argument('--name', '-n', help='fs-name to pass on to controller\'s command')
-    parser.add_argument('--options', '-o', help='fs-options to pass on to controller\'s command')
+    parser.add_argument('--host', required=True, help='Control server host IP.')
+    parser.add_argument('--port', '-p', required=True, help='Port No.')
 
     parser.add_argument('controller')
     parser.add_argument('command')
 
+    subparsers = parser.add_subparsers(help='sub-command help')
+    parser_controller = subparsers.add_parser('controller', help='Controlle help')
+    parser_controller.add_argument()
+    parser_a.add_argument('--name', '-n', required=True, help='fs-name to pass on to controller\'s command')
+    parser_a.add_argument('--options', '-o', required=True, help='fs-options to pass on to controller\'s command')
+
     args = parser.parse_args()
+    args2 = parser_a.parse_args()
     
     efsctl_init()
     efsctl_execute()
