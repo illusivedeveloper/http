@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import sys
+#import sys
 import json
 import http.client
-import urllib.request
-import urllib.parse
+#import urllib.request
+#import urllib.parse
 import argparse
 
 default_host = "127.0.0.1"
@@ -18,9 +18,13 @@ def efsctl_fs_echo():
     method = "PUT"
     url = "/echo"
     headers = {}
-    name = args.name
     options = args.options
-    content = b'{"fs-name" : name, "fs-options" : options}'
+    for i in range (len(options)):
+        split = (options[i].split(':'))
+        json_content = {}
+        json_content.update({split[0] : split[1]})
+        print(json_content)
+    content = ""
     efsctl_query(method, url, headers, content)
     conn.getresponse()
 
@@ -63,14 +67,16 @@ def efsctl_execute():
              "export" : efsctl_export
             }
     controller = controller_switcher.get(controller)
-    #controller(command)    
+    controller(command)    
+    '''
     try:
         controller(command)
     except:
         print("Error: Invalid Controller or Command")
-        print('''Valid Controllers with respective commands are:
+        print(''' '''Valid Controllers with respective commands are:
                 Controller: fs | Commands: [echo (fsname, fs-options), create]
-                Controller: export | Commands: [echo]''')
+                Controller: export | Commands: [echo]''' ''')
+    '''
 
 def efsctl_init():
     port = args.port
@@ -98,8 +104,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Utility to control fs functions using REST API and HTTP protocol.')
     parser.add_argument('--host', help='Host system to connect')
     parser.add_argument('--port', '-p', help='Process port on the host system to connect')
-    parser.add_argument('--name', '-n', help='fs-name to pass on to controller\'s command')
-    parser.add_argument('--options', '-o', help='fs-options to pass on to controller\'s command')
+    parser.add_argument('--options', '-o', nargs='*', help='fs-options to pass on to controller\'s command')
 
     parser.add_argument('controller')
     parser.add_argument('command')
