@@ -33,6 +33,7 @@ def efsctl_fs_echo():
 
     encoded_json_content = json.dumps(json_content).encode('utf-8')
 
+    #content = options_list
     content = encoded_json_content
 
     efsctl_query(method, url, headers, content)
