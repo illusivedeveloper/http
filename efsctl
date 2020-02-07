@@ -23,6 +23,11 @@ class efsctl:
     def efsctl_execute_controller():
         pass
 
-    def parser():
-        pass
+    def parsers():
+        main_parser = argparse.ArgumentParser(prog='efsctl', description='efsctl utility', usage=''' efsctl <controller> <command> [<args>]''')
+        main_parser.add_argument('--host', help='Host system to connect')
+        main_parser.add_argument('--port', '-p', help='Port of host system to connect')
+
+        
+
 
