@@ -11,6 +11,10 @@ import argparse
 default_host = "127.0.0.1"
 default_port = "8000"
 
+'''
+Add class to create controller and commands easily
+'''
+
 def efsctl_query(method, url, headers, content):
     conn.request(method, url, content, headers)
 
