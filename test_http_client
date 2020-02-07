@@ -22,22 +22,18 @@ def efsctl_fs_echo():
     options = args.options
     options_list = []
     json_content = {}
-    try:
-        if len(options) == 0:
-            for i in range (len(options)):
-                if ':' not in options[i]:
-                    options_list.append(options[i].encode('utf-8'))
-                else:    
-                    split = (options[i].split(':'))
-                    json_content.update({split[0] : split[1]})
-            if len(options_list) == 0:
-                content = json.dumps(json_content).encode('utf-8')
-            else:
-                content = options_list
-        else:
-            content = ""
-    except:
-        content = ""
+    encoded_json_content = {}
+    
+    for i in range (len(options)):
+        if ':' not in options[i]:
+            options_list.append(options[i].encode('utf-8'))
+        else:    
+            split = (options[i].split(':'))
+            json_content.update({split[0] : split[1]})
+
+    encoded_json_content = json.dumps(json_content).encode('utf-8')
+
+    content = encoded_json_content
 
     efsctl_query(method, url, headers, content)
     conn.getresponse()
@@ -85,11 +81,12 @@ def efsctl_execute():
     #controller(command)    
     try:
         controller(command)
-    except:
+    except Exception as e:
         print("Error: Invalid Controller or Command")
         print('''Valid Controllers with respective commands are:
                 Controller: fs | Commands: [echo (fsname, fs-options), create]
                 Controller: export | Commands: [echo]''')
+        print(e)
 
 def efsctl_init():
     port = args.port
@@ -126,8 +123,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Utility to control fs functions using REST API and HTTP protocol.')
     parser.add_argument('--host', help='Host system to connect')
     parser.add_argument('--port', '-p', help='Process port on the host system to connect')
-    #parser.add_argument('--headers', nargs='*', help='headers to pass on to http request')
-    parser.add_argument('--options', '-o', nargs='*', help='fs-options to pass on to controller\'s command')
+    parser.add_argument('--options', '-o', nargs='+', help='fs-options to pass on to controller\'s command')
 
     parser.add_argument('controller')
     parser.add_argument('command')
