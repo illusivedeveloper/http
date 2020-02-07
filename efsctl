@@ -13,21 +13,29 @@ class efsctl:
     def __init__(self):
         pass
 
-    def efsctl_init():
+    def efsctl_init(self):
+        host = main_args.host
+        port = main_args.port
+
+        if host and port is None:
+            host = default_host
+            port = default_port
+        print(host)
+        print(port)
+        print(Connecting...)
+
+    def efsctl_query(self):
         pass
 
-    def efsctl_query():
-        pass
 
-
-    def efsctl_execute_controller():
+    def efsctl_execute_controller(self):
         pass
 
     def parsers():
         main_parser = argparse.ArgumentParser(prog='efsctl', description='efsctl utility', usage=''' efsctl <controller> <command> [<args>]''')
-        main_parser.add_argument('--host', help='Host system to connect')
-        main_parser.add_argument('--port', '-p', help='Port of host system to connect')
+        main_parser.add_argument('--host', help='Host system to connect', nargs='+')
+        main_parser.add_argument('--port', '-p', help='Port of host system to connect', nargs='+')
+        main_args = main_parser.parse_args()
 
-        
-
-
+efsctl_obj = efsctl()
+efsctl_obj.efsctl_init()
