@@ -32,9 +32,12 @@ def efsctl_fs_echo():
             json_content.update({split[0] : split[1]})
 
     encoded_json_content = json.dumps(json_content).encode('utf-8')
+    
+    content = [encoded_json_content, options_list]
 
     #content = options_list
-    content = encoded_json_content
+    #content = encoded_json_content
+    #content = ""
 
     efsctl_query(method, url, headers, content)
     conn.getresponse()
