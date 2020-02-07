@@ -3,4 +3,26 @@
 import http.client
 import argparse
 import json
+import urllib.request
+import urllib.parse
+
+default_host = "127.0.0.1"
+default_port = "8000"
+
+class efsctl:
+    def __init__(self):
+        pass
+
+    def efsctl_init():
+        pass
+
+    def efsctl_query():
+        pass
+
+
+    def efsctl_execute_controller():
+        pass
+
+    def parser():
+        pass
 
