@@ -115,7 +115,14 @@ def efsctl_init():
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Utility to control fs functions using REST API and HTTP protocol.', usage='''efsctl <controller> <command> [<args>]''')
+    parser = argparse.ArgumentParser(prog='efsctl', formatter_class=argparse.RawDescriptionHelpFormatter, description='''Utility to control fs functions using REST API and HTTP protocol.
+                
+These are the comman controllers provided here:
+    fs          Contains commands like echo, create etc.
+    export      Contains commands like echo, create etc.
+    fault       Contains commands like echo, create etc.
+
+''', usage='''efsctl <controller> <command> [<args>]''')
     parser.add_argument('--host', help='Host system to connect')
     parser.add_argument('--port', '-p', help='Process port on the host system to connect')
 
