@@ -11,87 +11,92 @@ default_port = "8000"
 def efsctl_query(method, url, headers, content):
     conn.request(method, url, content, headers)
 
-def efsctl_fs_echo():
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''The echo command of fs controller.
+def efsctl_fs_create():
+    parser = argparse.ArgumentParser(
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                description='''FS create.''',
+                usage="create name=NAME --options=OPTIONS")
 
-The arguments provided with the echo command are:
-    --options, -o The data to be sent in key:value pair
-example:
-    efsctl fs echo --options name:data,time:data...
-''', usage="efsctl fs echo [<args>]")
-    parser.add_argument('--options', '-o', nargs='+', help='fs-options to pass on to controller\'s command.')
+    parser.add_argument('name', help='FS name.')            
+    parser.add_argument('--options', '-o', help='FS options.')
+
     args = parser.parse_args(sys.argv[3:])
+    name = args.name
+    options = args.options
 
     method = "PUT"
-    url = "/echo"
+    url = "/fs/create/"
     headers = {}
-    
-    options = args.options
+
     options_list = []
-    json_content = {}
+    fs_json_data = {}
+    fs_json_options = {}
     encoded_json_content = {}
     
-    if options == None:
-        # Invalid options.
-        pass
-    else:
-        option_list = options[0].split(',')
+    fs_json_data.update({"fs-name": name})
+    
+    if options != None:
+        option_list = options.split(',')
         for option_token in option_list:
             option = option_token.split(':')
             key = option[0]
             val = option[1]
-            json_content.update({key : val})
+            fs_json_options.update({key : val})
 
-    encoded_json_content = json.dumps(json_content).encode('utf-8')
+    fs_json_data.update("fs-option", fs_json_options)
+
+    encoded_json_content = json.dumps(fs_json_data).encode('utf-8')
     
     content = encoded_json_content
 
     efsctl_query(method, url, headers, content)
     conn.getresponse()
-    print("fs controller echo command operation completed.")
 
-def efsctl_fs_create():
-    method = "PUT"
-    url = "/create"
+def efsctl_fs_delete():
+    method = "DELETE"
+    url = "/fs/delete/"
     headers = {}
     fs_name = ""
-    fs_options = "" 
     content = ""
     efsctl_query(method, url, headers, content)
     conn.getresponse()
 
 def efsctl_fs(command):
     command_switcher = \
-            {"echo" : efsctl_fs_echo,
-             "create" : efsctl_fs_create
+            {"create" : efsctl_fs_create,
+             "delete" : efsctl_fs_delete
             }
     fs_command = command_switcher.get(command)
-    fs_command()
+    if fs_command != None:
+        fs_command()
+    else:
+        parser.print_help()
 
 def efsctl_export(command):
     command_switcher = \
-            {"echo" : efsctl_export_echo
+            {"create" : efsctl_export_create,
+             "delete" : efsctl_export_delete
             }
     export_command = command_switcher.get(command)
-    export_command()
+    if export_command != None:
+        export_command()
+    else:
+        parser.print_help()
+
 
 def efsctl_execute():
     controller = args.controller
     command = args.command
     controller_switcher = \
-            {"fs" : efsctl_fs,
-             "export" : efsctl_export
+            {
+                "fs" : efsctl_fs,
+                "export" : efsctl_export
             }
     controller = controller_switcher.get(controller)
-    #controller(command)    
-    try:
+    if controller != None:
         controller(command)
-    except Exception as e:
-        print("Error: Invalid Controller or Command.")
-        print('''Valid Controllers with respective commands are:
-                Controller: fs | Commands: [echo (fsname, fs-options), create]
-                Controller: export | Commands: [echo]''')
-        print(e)
+    else:
+        parser.print_help()
 
 def efsctl_init():
     port = args.port
@@ -103,47 +108,40 @@ def efsctl_init():
     if host is None:
         host = default_host
 
-    print("Setting connection...")
-    global conn 
+    global conn
     conn = http.client.HTTPConnection(host, port)
     try:
-        conn.request("GET", "/")
-        response = conn.getresponse()
-        print("Status Code: {} Reason: {}".format(response.status, response.reason))
-        if response.reason == 'OK':
-            print("Connection established")
-        bool = True
-        return bool
+        conn_ok = True
     except:
-        print("Connection Error")
-        bool = False
-        return bool
+        conn_ok = False
+
+    return conn_ok
+        
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(prog='efsctl', formatter_class=argparse.RawDescriptionHelpFormatter, description='''Utility to control fs functions using REST API and HTTP protocol.
+    parser = argparse.ArgumentParser(prog='efsctl',
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                description='''Utility to control EFS.
                 
-These are the comman controllers provided here:
-    fs          The fs controller operation.
-    export      The export controller operation.
-    fault       The fault controller operation.
+    Controllers:
+        fs          Filesystem management controller.
+        export      Export management controller.
+        fault       Fault management controller.
 
-These are the comman commands with their options provided to the respective controllers:
-    fs:
-        efsctl fs echo [<args>]
-        efsctl fs create [<args>]
+    FS Commands:
+        create      Create a filesystem.
+        delete      Delete a filesystem.
+        list        List all filesystems.
         
-    export:
-        efsctl export echo [<args>]
-        efsctl export create [<args>]
+    Export Commands:
+        create      Create an export.
+        delete      Delete an export.
+        list        List all export.''',
+                usage='''efsctl <controller> <command> [<args>]''')
 
-    fault:
-        efsctl fault echo [<args>]
-        efsctl fault create [<args>]
-
-''', usage='''efsctl <controller> <command> [<args>]''')
-    parser.add_argument('--host', help='Host system to connect.')
-    parser.add_argument('--port', '-p', help='Process port on the host system to connect.')
+    parser.add_argument('--host', help='Host name.')
+    parser.add_argument('--port', '-p', help='Port number.')
 
 
 
