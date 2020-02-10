@@ -12,7 +12,13 @@ def efsctl_query(method, url, headers, content):
     conn.request(method, url, content, headers)
 
 def efsctl_fs_echo():
-    parser = argparse.ArgumentParser(description='Options can be provided using <--options> to echo command')
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''The echo command of fs controller.
+
+The arguments provided with the echo command are:
+    --options, -o The data to be sent in key:value pair
+example:
+    efsctl fs echo --options name:data,time:data...
+''', usage="efsctl fs echo [<args>]")
     parser.add_argument('--options', '-o', nargs='+', help='fs-options to pass on to controller\'s command')
     args = parser.parse_args(sys.argv[3:])
 
@@ -118,9 +124,22 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='efsctl', formatter_class=argparse.RawDescriptionHelpFormatter, description='''Utility to control fs functions using REST API and HTTP protocol.
                 
 These are the comman controllers provided here:
-    fs          Contains commands like echo, create etc.
-    export      Contains commands like echo, create etc.
-    fault       Contains commands like echo, create etc.
+    fs          The fs controller operation.
+    export      The export controller operation.
+    fault       The fault controller operation.
+
+These are the comman commands with their options provided to the respective controllers:
+    fs:
+        efsctl fs echo [<args>]
+        efsctl fs create [<args>]
+        
+    export:
+        efsctl export echo [<args>]
+        efsctl export create [<args>]
+
+    fault:
+        efsctl fault echo [<args>]
+        efsctl fault create [<args>]
 
 ''', usage='''efsctl <controller> <command> [<args>]''')
     parser.add_argument('--host', help='Host system to connect')
