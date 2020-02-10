@@ -29,19 +29,31 @@ def efsctl_fs_echo():
     json_content = {}
     encoded_json_content = {}
     
-    for i in range (len(options)):
-        if ':' not in options[i]:
-            #options_list.append(options[i])
-            options_list.append(options[i].encode('utf-8'))
-        else:    
-            split = (options[i].split(':'))
-            json_content.update({split[0] : split[1]})
+    if options == None:
+        # Invalid options.
+        pass
+    else:
+        option_list = options[0].split(',')
+        for option_token in option_list:
+            option = option_token.split(':')
+            key = option[0]
+            val = option[1]
+            json_content.update({key : val})
 
+    '''
+        for i in range (len(options)):
+            if ':' not in options[i]:
+                #options_list.append(options[i])
+                options_list.append(options[i].encode('utf-8'))
+            else:    
+                split = (options[i].split(':'))
+                json_content.update({split[0] : split[1]})
+    '''
     encoded_json_content = json.dumps(json_content).encode('utf-8')
     
     #content = options_list
-    #content = encoded_json_content
-    content = ""
+    content = encoded_json_content
+    #content = ""
 
     efsctl_query(method, url, headers, content)
     conn.getresponse()
@@ -86,15 +98,17 @@ def efsctl_execute():
              "export" : efsctl_export
             }
     controller = controller_switcher.get(controller)
-    #controller(command)    
+    controller(command)    
+'''
     try:
         controller(command)
     except Exception as e:
         print("Error: Invalid Controller or Command")
-        print('''Valid Controllers with respective commands are:
+        print(''' '''Valid Controllers with respective commands are:
                 Controller: fs | Commands: [echo (fsname, fs-options), create]
-                Controller: export | Commands: [echo]''')
+                Controller: export | Commands: [echo]''' ''')
         print(e)
+'''
 
 def efsctl_init():
     port = args.port
