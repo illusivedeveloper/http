@@ -33,6 +33,8 @@ def efsctl_fs_create():
     fs_json_options = {}
     encoded_json_content = {}
     
+    request_header = {"Type" : "create", "Id" : "0", "Session_id" : "0"}
+
     fs_json_data.update({"fs-name": name})
     
     if options != None:
@@ -45,7 +47,9 @@ def efsctl_fs_create():
 
     fs_json_data["fs-option"] = fs_json_options
 
-    encoded_json_content = json.dumps(fs_json_data).encode('utf-8')
+    request_header["Request"] = [fs_json_data]
+    print(request_header)
+    encoded_json_content = json.dumps(request_header).encode('utf-8')
     
     content = encoded_json_content
 
