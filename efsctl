@@ -54,8 +54,10 @@ def efsctl_fs_create():
 
 
     efsctl_query(method, url, headers, content)
-    fs_create_response = conn.getresponse()
- #   print(json.load(fs_create_response))
+    response = conn.getresponse()
+    fs_create_response = response.read()
+    print(fs_create_response)
+#    fs_create_response_data = json.dumps(fs_create_response).decode('utf-8')
 
 def efsctl_fs_delete():
     parser = argparse.ArgumentParser(
