@@ -33,7 +33,7 @@ def efsctl_fs_create():
     fs_create_options = {}
     content = {}
     
-    fs_create_request = {"Type" : "fs_create", "Id" : "0", "Session_id" : "0"}
+    fs_create_request = {"type" : "fs_create", "id" : "0", "session_id" : "0"}
 
     fs_create_data["fs-name"] = name
     
@@ -47,23 +47,44 @@ def efsctl_fs_create():
 
     fs_create_data["fs-option"] = fs_create_options
 
-    fs_create_request["Request"] = [fs_create_data]
+    fs_create_request["request"] = [fs_create_data]
 
     print(fs_create_request)
     content = json.dumps(fs_create_request).encode('utf-8')
 
 
     efsctl_query(method, url, headers, content)
-    conn.getresponse()
+    fs_create_response = conn.getresponse()
+ #   print(json.load(fs_create_response))
 
 def efsctl_fs_delete():
+    parser = argparse.ArgumentParser(
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                description='''FS delete.''',
+                usage="delete name=NAME")
+
+    parser.add_argument('name', help='FS name.')
+
+    args = parser.parse_args(sys.argv[3:])
+    name = args.name
+
     method = "DELETE"
     url = "/fs/delete/"
     headers = {}
-    fs_name = ""
-    content = ""
+
+    fs_delete_data = {}
+    content = {}
+
+    fs_delete_request = {"type" : "fs_delete", "id" : "0", "session_id" : "0"}
+
+    fs_delete_data["fs-name"] = name
+    fs_delete_request["request"] = [fs_delete_data]
+
+    content = json.dumps(fs_delete_request).encode('utf-8')
+
     efsctl_query(method, url, headers, content)
-    conn.getresponse()
+    fs_delete_response = conn.getresponse()
+ #   print(json.load(fs_delete_response))
 
 def efsctl_fs(command):
     command_switcher = \
