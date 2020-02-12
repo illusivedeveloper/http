@@ -29,13 +29,13 @@ def efsctl_fs_create():
     headers = {}
 
     options_list = []
-    fs_json_data = {}
-    fs_json_options = {}
-    encoded_json_content = {}
+    fs_create_data = {}
+    fs_create_options = {}
+    content = {}
     
-    request_header = {"Type" : "create", "Id" : "0", "Session_id" : "0"}
+    fs_create_request = {"Type" : "fs_create", "Id" : "0", "Session_id" : "0"}
 
-    fs_json_data.update({"fs-name": name})
+    fs_create_data["fs-name"] = name
     
     if options != None:
         option_list = options.split(',')
@@ -43,15 +43,15 @@ def efsctl_fs_create():
             option = option_token.split(':')
             key = option[0]
             val = option[1]
-            fs_json_options.update({key : val})
+            fs_create_options[key] = val
 
-    fs_json_data["fs-option"] = fs_json_options
+    fs_create_data["fs-option"] = fs_create_options
 
-    request_header["Request"] = [fs_json_data]
-    print(request_header)
-    encoded_json_content = json.dumps(request_header).encode('utf-8')
-    
-    content = encoded_json_content
+    fs_create_request["Request"] = [fs_create_data]
+
+    print(fs_create_request)
+    content = json.dumps(fs_create_request).encode('utf-8')
+
 
     efsctl_query(method, url, headers, content)
     conn.getresponse()
