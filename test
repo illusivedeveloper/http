@@ -154,8 +154,8 @@ if __name__ == "__main__":
                 OR
 Use: efsctl --help''')
 
-    parser.add_argument('--host', help='Host name.', default='127.0.0.1')
-    parser.add_argument('--port', '-p', help='Port number.', default='8000')
+    parser.add_argument('--host', help='Host name.', nargs='?', default='127.0.0.1')
+    parser.add_argument('--port', '-p', help='Port number.', nargs='?', default='8000')
 
 
 
