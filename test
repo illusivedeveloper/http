@@ -95,8 +95,6 @@ class Efsctl_fs:
         print(fs_create_request)
         content = json.dumps(fs_create_request).encode('utf-8')
 
-        efsctl = Efsctl()
-        efsctl.efsctl_init()        
         efsctl.efsctl_query(method, url, headers, content)
         response = efsctl.conn.getresponse()
         fs_create_response = response.read()
@@ -128,9 +126,8 @@ class Efsctl_fs:
 
         content = json.dumps(fs_delete_request).encode('utf-8')
 
-        efsctl = Efsctl()        
         efsctl.efsctl_query(method, url, headers, content)
-        fs_delete_response = conn.getresponse()
+        fs_delete_response = efsctl.conn.getresponse()
        #print(json.load(fs_delete_response))
 
 if __name__ == "__main__":
