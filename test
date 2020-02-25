@@ -95,9 +95,10 @@ class Efsctl_fs:
         print(fs_create_request)
         content = json.dumps(fs_create_request).encode('utf-8')
 
-        efsctl = Efsctl()        
+        efsctl = Efsctl()
+        efsctl.efsctl_init()        
         efsctl.efsctl_query(method, url, headers, content)
-        response = conn.getresponse()
+        response = efsctl.conn.getresponse()
         fs_create_response = response.read()
         print(fs_create_response)
         #fs_create_response_data = json.dumps(fs_create_response).decode('utf-8')
