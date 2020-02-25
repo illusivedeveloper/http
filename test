@@ -130,6 +130,22 @@ class Efsctl_fs:
         print(fs_delete_response)
        #print(json.load(fs_delete_response))
 
+class Efsctl_export:
+    def efsctl_export_command(self):
+        self.command = args.command
+        if self.command == "create":
+            self.efsctl_export_create()
+        elif self.command == "delete":
+            self.efsctl_export_delete()
+        else:
+            parser.print_help()
+
+    def efsctl_export_create(self):
+        pass
+
+    def efsctl_export_delete(self):
+        pass
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(prog='efsctl',
