@@ -132,7 +132,9 @@ class Efsctl_fs:
         content = json.dumps(fs_delete_request).encode('utf-8')
 
         efsctl.efsctl_query(method, url, headers, content)
-        fs_delete_response = efsctl.conn.getresponse()
+        response = efsctl.conn.getresponse()
+        fs_delete_response = response.read()
+        print(fs_delete_response)
        #print(json.load(fs_delete_response))
 
 if __name__ == "__main__":
