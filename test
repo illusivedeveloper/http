@@ -1,0 +1,170 @@
+#!/usr/bin/python3
+
+import sys
+import json
+import http.client
+import argparse
+from abc import ABC, abstractmethod
+
+default_host = "127.0.0.1"
+default_port = "8000"
+
+class Efsctl:
+    def efsctl_init(self):
+        self.port = args.port
+        self.host = args.host
+
+        if self.port is None:
+            self.port = default_port
+
+        if self.host is None:
+            self.host = default_host
+
+        try:
+            self.conn = http.client.HTTPConnection(self.host, self.port)
+            self.conn_ok = True
+        except:
+            self.conn_ok = False
+
+        return self.conn_ok
+
+    def efsctl_execute(self):
+        self.controller = args.controller
+
+        if self.controller == "fs":
+            efsctl_fs = Efsctl_fs()
+            efsctl_fs.efsctl_fs_command()
+        elif self.controller == "export":
+            efsctl_fs = Efsctl_export()
+            efsctl_fs.efsctl_export_command()
+        else:
+            parser.print_help()
+
+    def efsctl_query(self, method, url, headers, content):
+        self.conn.request(method, url, content, headers)
+
+
+class Efsctl_fs:   
+    def efsctl_fs_command(self):
+        self.command = args.command
+        if self.command == "create":
+            self.efsctl_fs_create()
+        elif self.command == "delete":
+            self.efsctl_fs_delete()
+        else:
+            parser.print_help()
+
+    def efsctl_fs_create(self):
+        parser = argparse.ArgumentParser(
+                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                    description='''FS create.''',
+                    usage="create name=NAME --options=OPTIONS")
+
+        parser.add_argument('name', help='FS name.')            
+        parser.add_argument('--options', '-o', help='FS options.')
+
+        args = parser.parse_args(sys.argv[3:])
+        name = args.name
+        options = args.options
+
+        method = "PUT"
+        url = "/fs/create/"
+        headers = {}
+
+        options_list = []
+        fs_create_data = {}
+        fs_create_options = {}
+        content = {}
+        
+        fs_create_request = {"type" : "fs_create", "id" : "0", "session_id" : "0"}
+
+        fs_create_data["fs-name"] = name
+        
+        if options != None:
+            option_list = options.split(',')
+            for option_token in option_list:
+                option = option_token.split(':')
+                key = option[0]
+                val = option[1]
+                fs_create_options[key] = val
+
+        fs_create_data["fs-option"] = fs_create_options
+
+        fs_create_request["request"] = [fs_create_data]
+
+        print(fs_create_request)
+        content = json.dumps(fs_create_request).encode('utf-8')
+
+        efsctl = Efsctl()        
+        efsctl.efsctl_query(method, url, headers, content)
+        response = conn.getresponse()
+        fs_create_response = response.read()
+        print(fs_create_response)
+        #fs_create_response_data = json.dumps(fs_create_response).decode('utf-8')
+
+    def efsctl_fs_delete(self):
+        parser = argparse.ArgumentParser(
+                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                    description='''FS delete.''',
+                    usage="delete name=NAME")
+
+        parser.add_argument('name', help='FS name.')
+
+        args = parser.parse_args(sys.argv[3:])
+        name = args.name
+
+        method = "DELETE"
+        url = "/fs/delete/"
+        headers = {}
+
+        fs_delete_data = {}
+        content = {}
+
+        fs_delete_request = {"type" : "fs_delete", "id" : "0", "session_id" : "0"}
+
+        fs_delete_data["fs-name"] = name
+        fs_delete_request["request"] = [fs_delete_data]
+
+        content = json.dumps(fs_delete_request).encode('utf-8')
+
+        efsctl = Efsctl()        
+        efsctl.efsctl_query(method, url, headers, content)
+        fs_delete_response = conn.getresponse()
+       #print(json.load(fs_delete_response))
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(prog='efsctl',
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                description='''Utility to control EFS.
+                
+    Controllers:
+        fs          Filesystem management controller.
+        export      Export management controller.
+        fault       Fault management controller.
+
+    FS Commands:
+        create      Create a filesystem.
+        delete      Delete a filesystem.
+        list        List all filesystems.
+        
+    Export Commands:
+        create      Create an export.
+        delete      Delete an export.
+        list        List all export.''',
+                usage='''efsctl <controller> <command> [<args>]
+                OR
+Use: efsctl --help''')
+
+    parser.add_argument('--host', help='Host name.')
+    parser.add_argument('--port', '-p', help='Port number.')
+
+
+
+    parser.add_argument('controller', help="Controller")
+    parser.add_argument('command', help='Command')
+
+    args = parser.parse_args(sys.argv[1:3])
+    efsctl = Efsctl()        
+    if efsctl.efsctl_init():
+        efsctl.efsctl_execute()

@@ -57,7 +57,7 @@ def efsctl_fs_create():
     response = conn.getresponse()
     fs_create_response = response.read()
     print(fs_create_response)
-#    fs_create_response_data = json.dumps(fs_create_response).decode('utf-8')
+    #fs_create_response_data = json.dumps(fs_create_response).decode('utf-8')
 
 def efsctl_fs_delete():
     parser = argparse.ArgumentParser(
@@ -86,7 +86,7 @@ def efsctl_fs_delete():
 
     efsctl_query(method, url, headers, content)
     fs_delete_response = conn.getresponse()
- #   print(json.load(fs_delete_response))
+    #print(json.load(fs_delete_response))
 
 def efsctl_fs(command):
     command_switcher = \
@@ -136,8 +136,8 @@ def efsctl_init():
         host = default_host
 
     global conn
-    conn = http.client.HTTPConnection(host, port)
     try:
+        conn = http.client.HTTPConnection(host, port)
         conn_ok = True
     except:
         conn_ok = False
