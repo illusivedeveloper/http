@@ -20,13 +20,18 @@ class Efsctl:
         if self.host is None:
             self.host = default_host
 
+        global conn
+        self.conn = http.client.HTTPConnection(self.host, self.port)
         try:
-            self.conn = http.client.HTTPConnection(self.host, self.port)
-            self.conn_ok = True
-        except:
-            self.conn_ok = False
-
-        return self.conn_ok
+            self.conn.request("GET", "/")
+            self.response = self.conn.getresponse()
+            if self.response.reason == 'OK':
+                bool = True
+            return bool
+        except Exception as e:
+            print(e)
+            bool = False
+            return bool
 
     def efsctl_execute(self):
         self.controller = args.controller
