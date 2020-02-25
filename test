@@ -13,13 +13,6 @@ class Efsctl:
     def efsctl_init(self):
         self.port = args.port
         self.host = args.host
-
-        if self.port is None:
-            self.port = default_port
-
-        if self.host is None:
-            self.host = default_host
-
         global conn
         self.conn = http.client.HTTPConnection(self.host, self.port)
         try:
@@ -161,8 +154,8 @@ if __name__ == "__main__":
                 OR
 Use: efsctl --help''')
 
-    parser.add_argument('--host', help='Host name.')
-    parser.add_argument('--port', '-p', help='Port number.')
+    parser.add_argument('--host', help='Host name.', default='127.0.0.1')
+    parser.add_argument('--port', '-p', help='Port number.', default='8000')
 
 
 
