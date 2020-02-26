@@ -4,7 +4,11 @@ import sys
 import json
 import http.client
 import argparse
-
+import os
+import logging
+from commands import *
+from api import *
+"""
 def efsctl_query(method, url, headers, content):
     conn.request(method, url, content, headers)
 
@@ -121,51 +125,32 @@ def efsctl_execute():
         controller(command)
     else:
         parser.print_help()
+"""
 
-def efsctl_init():
-    port = args.port
-    host = args.host
-    global conn
-    conn = http.client.HTTPConnection(host, port)
-    try:
-        conn.request("GET", "/")
-        response = conn.getresponse()
-        if response.reason == 'OK':
-            bool = True
-        return bool
-    except Exception as e:
-        print(e)
-        bool = False
-        return bool
-        
-
-if __name__ == "__main__":
+def main(argv):
     """
     Parse and execute command line to obtain command structure.
     Execute the CLI
     """
     cli_path = os.path.realpath(argv[0])
     sys.path.append(os.path.join(os.path.dirname(cli_path), '..', '..'))
-    # from cli.commands import *
-    # from cli.api import *
 
     try:
         command = CommandFactory.get_command(argv[1:])
+        #TODO: Implement efsapiclient
         client = EfsApiClient()
         response = client.call(command)
         rc = response.rc()
         if rc != 0:
             sys.stdout.write('error(%d): ' %rc)
-        sys.stdout.write('%s\n' %response.output())
-        return rc
+            sys.stdout.write('%s\n' %response.output())
+            return rc
 
     except Exception as exception:
         sys.stderr.write('%s\n' %exception)
-        Log.error(traceback.format_exc())
+        #Log.error(traceback.format_exc())
         # TODO - Extract rc from exception
         return 1
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv)) 
-    if efsctl_init():
-        efsctl_execute()

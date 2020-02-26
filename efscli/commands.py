@@ -1,20 +1,4 @@
-class CommandFactory(object):
-    """ Factory for representing and creating command objects using a generic skeleton. """
-
-    commands = {FsCommand, ...}
-
-    @staticmethod def get_command(argv):
-        """ Parse the command line as per the syntax and return command """
-
-        parser = argparse.ArgumentParser(description='EFS CLI command')
-        subparsers = parser.add_subparsers()
-
-        for command in CommandFactory.commands:
-            command.add_args(subparsers)
-
-        args = parser.parse_args(argv)
-        return args.command(args)
-
+import argparse
 class Command(object):
     """ Base class for all commands supported by RAS CLI """
 
@@ -42,3 +26,20 @@ class FsCommand(Command):
         sbparser.add_argument('action', help='action', choices=['create', 'list', 'delete'])
         sbparser.add_argument('args', nargs='*', default=[], help='fs command options')
         sbparser.set_defaults(command=FsCommand)
+
+class CommandFactory(object):
+    """ Factory for representing and creating command objects using a generic skeleton. """
+
+    commands = {FsCommand}
+
+    def get_command(argv):
+        """ Parse the command line as per the syntax and return command """
+
+        parser = argparse.ArgumentParser(description='EFS CLI command')
+        subparsers = parser.add_subparsers()
+
+        for command in CommandFactory.commands:
+            command.add_args(subparsers)
+
+        args = parser.parse_args(argv)
+        return args.command(args)
